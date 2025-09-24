@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import type React from "react";
 import { Navbar } from "@/components/navbar";
 import { 
   Upload, 
@@ -13,8 +14,6 @@ import {
   AlertCircle, 
   Loader2,
   RotateCcw,
-  Play,
-  GraduationCap,
   Trash2,
   File,
   X
@@ -166,7 +165,7 @@ export default function EvaluationPage() {
     }
 
     if (validFiles.length > 0) {
-      setSelectedFiles(prev => [...prev, ...validFiles]);
+      setSelectedFiles((prev: File[]) => [...prev, ...validFiles]);
       await validateFiles(validFiles);
     }
   }, []);
@@ -199,9 +198,9 @@ export default function EvaluationPage() {
 
   // Remove file from selection
   const removeFile = (index: number) => {
-    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    const newFiles = selectedFiles.filter((_: File, i: number) => i !== index);
     setSelectedFiles(newFiles);
-    const newValidation = validationResults.filter((_, i) => i !== index);
+    const newValidation = validationResults.filter((_: FileValidationResult, i: number) => i !== index);
     setValidationResults(newValidation);
   };
 
@@ -236,7 +235,7 @@ export default function EvaluationPage() {
       return;
     }
 
-    const validFiles = validationResults.filter(r => r.isValid);
+  const validFiles = validationResults.filter((r: FileValidationResult) => r.isValid);
     if (validFiles.length === 0) {
       setError("Please ensure all files have valid format");
       return;
@@ -247,7 +246,7 @@ export default function EvaluationPage() {
 
     try {
       const result = await apiService.evaluateStudentBatch(
-        validFiles.map(r => r.file),
+  validFiles.map((r: FileValidationResult) => r.file),
         problemStatement,
         additionalContext || undefined
       );
@@ -314,8 +313,8 @@ export default function EvaluationPage() {
     setValidationResults([]);
   };
 
-  const validFileCount = validationResults.filter(r => r.isValid).length;
-  const invalidFileCount = validationResults.filter(r => !r.isValid).length;
+  const validFileCount = validationResults.filter((r: FileValidationResult) => r.isValid).length;
+  const invalidFileCount = validationResults.filter((r: FileValidationResult) => !r.isValid).length;
 
   return (
     <div className="min-h-screen bg-gray-50">
